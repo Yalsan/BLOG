@@ -1,0 +1,1 @@
+This is a simple blogging website where users can create an account, log in, and post blogs. You can read posts, like them, and leave comments. It's a place to share your ideas and connect with others.
