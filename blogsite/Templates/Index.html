@@ -1,0 +1,133 @@
+
+{% load static %}
+</html> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Responsive Navbar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href='{% static 'style.css' %}'>
+</head>
+<body>
+ {%include 'header.html'%}
+<div class="container my-5">
+  <h2 class="text-center mb-4" style=" margin:100px">Latest Articles</h2>
+  {% for article in articles %}
+    <div class="row blog-post mb-4 p-3">
+      
+      <!-- Image Column -->
+      <div class="col-md-3 d-flex align-items-center justify-content-center mb-3 mb-md-0">
+        {% if article.image %}
+          <img src="{{ article.image.url }}" alt="Post Image" class="" style="width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }">
+        
+        {% endif %}
+      </div>
+
+      <!-- Content Column -->
+      <div class="col-md-9">
+        <h5 class="fw-bold">{{ article.title }}</h5>
+        <p class="text-muted mb-1">
+          <h6>  Category:
+             <a href="{% url 'category' article.category.name %}">
+         {{ article.category }}
+           </a>
+          </h6>
+          <p class="text-muted small mb-2">
+          By <strong>{{ article.author.username }}</strong> |
+          {% load tz %}
+          {% timezone "Asia/Kathmandu" %}
+            {{ article.date|date:"g:i A, d M Y" }}
+          {% endtimezone %}
+        </p>
+        
+        <p>{{ article.content|truncatewords:30 }}</p>
+
+        <!-- Like Section -->
+        <div id="like-section-{{ article.id }}" class="mb-2">
+          <span class="like-emoji" data-id="{{ article.id }}" style="cursor: pointer; font-size: 1.5rem;">
+            {% if user in article.likes.all %}
+              ❤️
+            {% else %}
+              🤍
+            {% endif %}
+          </span>
+          <span class="like-count">{{ article.total_likes }}</span> Likes
+        </div>
+
+        <!-- Read More Button -->
+        <a href="{% url 'article_detail' article.pk %}#comment-section" class="text-decoration-none text-success fw-bold text-primary-hover">
+          Read More......
+        </a>
+      </div>
+
+    </div>
+  {% empty %}
+    <p class="text-center">No blog posts available.</p>
+  {% endfor %}
+</div>
+
+      
+      
+    
+    </div>
+</div>
+</body>
+
+
+<footer>
+  <script>
+  // Get CSRF token from cookie
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (const cookie of cookies) {
+        const trimmed = cookie.trim();
+        if (trimmed.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(trimmed.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.like-emoji').forEach(el => {
+      el.addEventListener('click', function () {
+        const articleId = this.getAttribute('data-id');
+        fetch(`/like/${articleId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        })
+        .then(res => res.json())
+        .then(data => {
+          const section = document.getElementById(`like-section-${articleId}`);
+          const emoji = section.querySelector('.like-emoji');
+          const count = section.querySelector('.like-count');
+          emoji.textContent = data.liked ? '❤️' : '🤍';
+          count.textContent = data.total_likes;
+        });
+      });
+    });
+  });
+</script>
+
+  
+{% include "footer.html" %}
+<html>
+  

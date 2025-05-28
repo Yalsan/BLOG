@@ -1,0 +1,68 @@
+{% load static %}
+{% block content %} 
+
+{% include "header.html" %}
+<script src="{% static 'assets/js/my_script.js' %}"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<h2> {{ cat_name }}</h2>
+  <h2 class="text-center m-4">Latest Articles</h2>
+{% for category in category_articles %}
+
+<div class="container my-5">
+
+
+    <div class="row blog-post mb-4 p-3">
+      
+      <!-- Image Column -->
+      <div class="col-md-3 d-flex align-items-center justify-content-center mb-3 mb-md-0">{% if  category.image %}
+          <img src="{{  category.image.url }}" alt="Post Image" class="" style="width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }">
+        
+        {% endif %}
+      </div>
+
+      <!-- Content Column -->
+      <div class="col-md-9">
+        <h5 class="fw-bold">{{  category.title }}</h5>
+        <p class="text-muted mb-1">
+        
+          <p class="text-muted small mb-2">
+          By <strong>{{  category.author.username }}</strong> |
+          {% load tz %}
+          {% timezone "Asia/Kathmandu" %}
+            {{  category.date|date:"g:i A, d M Y" }}
+          {% endtimezone %}
+        </p>
+        
+        <p>{{  category.content|truncatewords:30 }}</p>
+
+        <!-- Like Section -->
+        <div id="like-section-{{ category.id }}" class="mb-2">
+          <span class="like-emoji" data-id="{{ category.id }}" style="cursor: pointer; font-size: 1.5rem;">
+            {% if user in  category.likes.all %}
+              ❤️
+            {% else %}
+              🤍
+            {% endif %}
+          </span>
+          <span class="like-count">{{  category.total_likes }}</span> Likes
+        </div>
+
+        <!-- Read More Button -->
+        <a href="{% url 'article_detail'  category.pk %}#comment-section" class="text-decoration-none text-success fw-bold text-primary-hover">
+          Read More......
+        </a>
+      </div>
+    </div>
+    <hr>
+  {% empty %}
+    <p class="text-center">No blog posts available.</p>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% include "footer.html" %}

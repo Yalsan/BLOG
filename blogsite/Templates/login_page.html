@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Login</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="{% static 'assets/css/fontawesome.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/templatemo-stand-blog.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/owl.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
+
+  <style>
+    form {
+      width: 50%;
+    }
+
+    h3 {
+      color: rgb(237, 63, 63);
+      font-weight: 500;
+      font-size: 30px;
+      margin-bottom: 20px;
+    }
+
+    .btn1 {
+      margin-top: 30px;
+      background: rgb(103, 191, 101);
+      width: 100%;
+      color: #fff;
+      font-size: 20px;
+      padding: 10px;
+      border: none;
+    }
+
+    .btn1:hover {
+      background: transparent;
+      border: 1px solid rgb(103, 191, 101);
+      color: rgb(241, 13, 13);
+    }
+
+    .para {
+      padding: 20px;
+      text-align: center;
+      font-size: 18px;
+      color: #555;
+    }
+
+    a {
+      text-decoration: none;
+      color: #386cbb;
+    }
+
+    a:hover {
+      color: rgb(237, 63, 63);
+      letter-spacing: 1px;
+    }
+
+    @media screen and (max-width: 600px) {
+      form {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  {% include 'header.html' %}
+
+  <div class="container">
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+      <form action="{% url 'signin' %}" method="post" class="p-5 shadow">
+        {% csrf_token %}
+        <h3>LOGIN</h3>
+
+        {% if messages %}
+          {% for message in messages %}
+            <p class="text-danger text-center">{{ message }}</p>
+          {% endfor %}
+        {% endif %}
+
+        <label for="username" class="form-label">Username</label>
+        <div class="input-group mt-1">
+          <span class="input-group-text">@</span>
+          <input type="text" id="username" class="form-control" name="username" required>
+        </div>
+
+        <label for="password" class="form-label mt-3">Password</label>
+        <div class="input-group mt-1">
+          <input type="password" id="password" class="form-control" name="password" required>
+        </div>
+
+        <button type="submit" class="btn1">Login</button>
+
+        <p class="para">Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
